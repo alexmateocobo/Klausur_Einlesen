@@ -4,6 +4,7 @@ from utils_text_detector import corner_detector
 from utils_text_detector import display_image_in_terminal
 from utils_text_detector import draw_circles
 from utils_text_detector import draw_contours_in_image
+from utils_text_detector import generate_artiffical_corners
 from utils_text_detector import hierarchical_contour_filtering_by_size
 from utils_text_detector import pre_process_scanned_image
 
@@ -49,7 +50,13 @@ def text_detector(image):
     # Get the coordinates of the corners of all contours from 'approximated_contours_1' and 'approximated_contours_2'
     corners_of_approximated_contours_1 = corner_detector(approximated_contours_1, pre_processed_image, 4)
     corners_of_approximated_contours_2 = corner_detector(approximated_contours_2, pre_processed_image, 4)
-    image_with_corners = image.copy()
-    draw_circles(corners_of_approximated_contours_1, image_with_corners)
-    draw_circles(corners_of_approximated_contours_2, image_with_corners)
-    display_image_in_terminal(image_with_corners, "Perspective transformed image with corners of the filtered contours")
+
+    # Generate grid based on the points in 'corners_of_approximated_contours_1'
+    grid_points_1 = generate_artiffical_corners(corners_of_approximated_contours_1, image)
+
+    # Generate grid based on the points in 'corners_of_approximated_contours_2'
+    grid_points_2 = generate_artiffical_corners(corners_of_approximated_contours_2, image)
+    image_with_grid = image.copy()
+    draw_circles(grid_points_1, image_with_grid)
+    draw_circles(grid_points_2, image_with_grid)
+    display_image_in_terminal(image_with_grid, "Perspective transformed image with generated grid")

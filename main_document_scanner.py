@@ -26,7 +26,7 @@ This section involves document scanning and perspective correction:
 
 def document_scanner(image_name):
     # Read the original image
-    image = cv2.imread('image_name')
+    image = cv2.imread(image_name)
     display_image_in_terminal(image, "Original image")
 
     # Pre-process the original image
@@ -65,3 +65,5 @@ def document_scanner(image_name):
     # Crop the image to remove external borders
     cropped_image = crop_image_percentage_based(perspective_transformed_image, 1)
     display_image_in_terminal(cropped_image, "Perspective transformed and cropped image")
+
+    return cropped_image

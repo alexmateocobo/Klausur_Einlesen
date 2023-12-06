@@ -1,5 +1,5 @@
 import cv2
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 def corner_detector(contours, gray_image, max_corners_per_contour):
@@ -90,8 +90,8 @@ def draw_contours_in_image(contours, image):
     - image: The image on which contours will be drawn.
     """
 
-    # Draw all contours on the image in green color with a thickness of 15
-    cv2.drawContours(image, contours, -1, (0, 255, 0), 15)
+    # Draw all contours on the image in green color with a thickness of 10
+    cv2.drawContours(image, contours, -1, (0, 255, 0), 10)
 
 def draw_labeled_circles(points, image):
     """
@@ -105,7 +105,7 @@ def draw_labeled_circles(points, image):
     # Iterate through the points
     for i, point in enumerate(points):
         x, y = int(point[0]), int(point[1])  # Extract x, y coordinates as integers
-        cv2.circle(image, (x, y), 20, (0, 255, 0), -1)  # Draw a filled green circle
+        cv2.circle(image, (x, y), 10, (0, 255, 0), -1)  # Draw a filled green circle
 
         # Add text label with point index
         cv2.putText(image, f'{i}', (x - 10, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 5)
@@ -233,31 +233,31 @@ def pre_process_image(image):
 
     # Convert the original image to grayscale
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    display_image_in_terminal(gray_image, "Grayscale image")
+    # display_image_in_terminal(gray_image, "Grayscale image")
 
     # Blurr the grayscale image
     blurred_image = cv2.GaussianBlur(gray_image, (15, 15), 0)
-    display_image_in_terminal(blurred_image, "Blurred image")
+    # display_image_in_terminal(blurred_image, "Blurred image")
 
     # Apply dilation and erosion to remove text from the blurred image
     kernel = np.ones((15, 15), np.uint8)
     closed_image = cv2.morphologyEx(blurred_image, cv2.MORPH_CLOSE, kernel, iterations=3)
-    display_image_in_terminal(closed_image, "Closed image")
+    # display_image_in_terminal(closed_image, "Closed image")
 
     # Edge 'closed_image'
-    edged_image = cv2.Canny(closed_image, 5, 150)
-    display_image_in_terminal(edged_image, "Edged image")
+    edged_image = cv2.Canny(closed_image, 10, 20)
+    # display_image_in_terminal(edged_image, "Edged image")
 
     # Create a 5x5 kernel filled with ones
     kernel = np.ones((5, 5))
 
     # Dilate the edged image
     dilated_image = cv2.dilate(edged_image, kernel, iterations = 2)
-    display_image_in_terminal(dilated_image, "Dilated image")
+    # display_image_in_terminal(dilated_image, "Dilated image")
 
     # Erode the dilated image
     eroded_image = cv2.erode(dilated_image, kernel, iterations = 1)
-    display_image_in_terminal(eroded_image, "Eroded image")
+    # display_image_in_terminal(eroded_image, "Eroded image")
 
     return eroded_image
 

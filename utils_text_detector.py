@@ -1,5 +1,5 @@
 import cv2
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
 def approximate_contours(contours):
@@ -96,7 +96,7 @@ def draw_circles(points, image):
     # Iterate through the points
     for i, point in enumerate(points):
         x, y = int(point[0]), int(point[1])  # Extract x, y coordinates as integers
-        cv2.circle(image, (x, y), 20, (0, 255, 0), -1)  # Draw a filled green circle
+        cv2.circle(image, (x, y), 10, (0, 255, 0), -1)  # Draw a filled green circle
 
 def draw_contours_in_image(contours, image):
     """
@@ -107,8 +107,111 @@ def draw_contours_in_image(contours, image):
     - image: The image on which contours will be drawn.
     """
 
-    # Draw all contours on the image in green color with a thickness of 15
-    cv2.drawContours(image, contours, -1, (0, 255, 0), 15)
+    # Draw all contours on the image in green color with a thickness of 10
+    cv2.drawContours(image, contours, -1, (0, 255, 0), 10)
+
+def find_unique_x_coordinates(points):
+    """
+    Finds unique x-coordinates from a list of points and returns them in ascending order.
+
+    Args:
+    - points: List of (x, y) coordinate pairs.
+
+    Returns:
+    - List containing unique x-coordinates from the given list of points, sorted in ascending order.
+    """
+
+    # Create an empty list to store all the unique x-coordinates
+    storage_list = []
+
+    # Loop through each point in the input list
+    for point in points:
+        x, y = point  # Extract x-coordinate from the point
+        
+        # Check if the x-coordinate is not already in the storage_list
+        if not value_is_in_storage_list(x, storage_list):
+            storage_list.append(x)  # Add the unique x-coordinate to the storage_list
+    
+    # Sort the storage_list in ascending order
+    storage_list.sort()
+    
+    return storage_list
+
+def find_unique_y_coordinates(points):
+    """
+    Finds unique y-coordinates from a list of points.
+
+    Args:
+    - points: List of (x, y) coordinate pairs.
+
+    Returns:
+    - List containing unique y-coordinates from the given list of points.
+    """
+
+    # Create an empty list to store all the unique y-coordinates
+    storage_list = []
+
+    # Loop through each point in the input list
+    for point in points:
+        x, y = point  # Extract y-coordinate from the point
+        
+        # Check if the y-coordinate is not already in the storage_list
+        if not value_is_in_storage_list(y, storage_list):
+            storage_list.append(y)  # Add the unique y-coordinate to the storage_list
+    
+    # Sort the storage_list in ascending order
+    storage_list.sort()
+    
+    return storage_list
+
+def generate_artiffical_corners(points, image):
+    """
+    Generates artificial corners for an image based on input points.
+
+    Args:
+    - points: List of points in the image.
+    - image: The image for which corners are being generated.
+
+    Returns:
+    - List of artificial corners generated from the unique x and y coordinates of input points.
+    """
+
+    # Find all the unique x-coordinates from the input points
+    unique_x_coordinates = find_unique_x_coordinates(points)
+
+    # Find all the unique y-coordinates from the input points
+    unique_y_coordinates = find_unique_y_coordinates(points)
+
+    # Generate a grid of points based on unique x and y coordinates
+    generated_grid_points = generate_grid_from_points(unique_x_coordinates, unique_y_coordinates)
+
+    return generated_grid_points
+
+def generate_grid_from_points(x_coordinates, y_coordinates):
+    """
+    Generates a grid of points from given x and y coordinates.
+
+    Args:
+    - x_coordinates: List of x-coordinates.
+    - y_coordinates: List of y-coordinates.
+
+    Returns:
+    - List of tuples representing the grid points, sorted first by y-coordinate and then by x-coordinate.
+    """
+
+    # Create an empty list to store all the generated points
+    generated_grid_points = []
+
+    # Generate all possible points by combining x and y coordinates
+    for x_coordinate in x_coordinates:
+        for y_coordinate in y_coordinates:
+            if not point_is_in_storage_list((x_coordinate, y_coordinate), generated_grid_points):
+                generated_grid_points.append((x_coordinate, y_coordinate))
+    
+    # Sort the generated_grid_points first by y-coordinate and then by x-coordinate
+    generated_grid_points.sort(key=lambda point: (point[1], point[0]))
+    
+    return generated_grid_points  # Return the sorted list of tuples representing the grid points
 
 def hierarchical_contour_filtering_by_size(contours, hierarchy, n):
     """
@@ -141,7 +244,7 @@ def hierarchical_contour_filtering_by_size(contours, hierarchy, n):
 
     return storage_list
 
-def point_is_in_storage_list(point, storage_list, tolerance = 15):
+def point_is_in_storage_list(point, storage_list, tolerance=10):
     """
     Checks if a point is approximately in a storage list within a specified tolerance.
 
@@ -180,6 +283,25 @@ def pre_process_scanned_image(scanned_image):
 
     # Threshold the grayscale image using adaptive thresholding
     thresholded_image = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                              cv2.THRESH_BINARY, 51, 40)
+                                              cv2.THRESH_BINARY, 51, 15)
 
     return thresholded_image
+
+def value_is_in_storage_list(value, storage_list, tolerance=10):
+    """
+    Checks if a value is approximately in a storage list within a specified tolerance.
+
+    Args:
+    - value: The value to be checked.
+    - storage_list: List of values to compare against.
+    - tolerance: Tolerance difference to consider a value as 'approximately' in the list.
+
+    Returns:
+    - Boolean indicating whether a similar value was found within the tolerance.
+    """
+
+    for value_in_storage_list in storage_list:
+        if abs(value - value_in_storage_list) < tolerance:
+            return True  # Found a matching value within tolerance
+
+    return False  # No matching value was found in the list
