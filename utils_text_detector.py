@@ -1,6 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 
 def approximate_contours(contours):
     """
@@ -89,14 +90,15 @@ def draw_circles(points, image):
     Draws circles on an image at specified points.
 
     Args:
-    - points: List of (x, y) coordinate pairs.
+    - points: 2D-array of (x, y) coordinate pairs.
     - image: The image on which circles will be drawn.
     """
 
     # Iterate through the points
-    for i, point in enumerate(points):
-        x, y = int(point[0]), int(point[1])  # Extract x, y coordinates as integers
-        cv2.circle(image, (x, y), 10, (0, 255, 0), -1)  # Draw a filled green circle
+    for row in points:
+        for point in row:
+            x, y = int(point[0]), int(point[1])  # Extract x, y coordinates as integers
+            cv2.circle(image, (x, y), 10, (0, 255, 0), -1)  # Draw a filled green circle
 
 def draw_contours_in_image(contours, image):
     """
@@ -109,6 +111,41 @@ def draw_contours_in_image(contours, image):
 
     # Draw all contours on the image in green color with a thickness of 10
     cv2.drawContours(image, contours, -1, (0, 255, 0), 10)
+
+def extract_text_from_image(image, array):
+    """
+    Extracts cropped images from an image using coordinates from the array.
+
+    Args:
+    - image: The original image (numpy.ndarray format).
+    - array: Array containing coordinates for cropping regions.
+
+    Returns:
+    - List of cropped images extracted from the original image.
+    """
+
+    cropped_images = []
+    max_i = len(array) - 1
+    max_j = len(array[0]) - 1
+
+    # Iterate through array indices for cropping
+    for i in range(max_i):
+        for j in range(max_j):
+            if i + 1 < len(array) and j + 1 < len(array[0]):
+                point_1 = array[i][j]
+                point_4 = array[i + 1][j + 1]
+
+                # Convert the image (numpy.ndarray) back to a PIL Image
+                pil_image = Image.fromarray(image)
+
+                # Use the PIL Image to crop the region
+                cropped_image = pil_image.crop((point_1[0], point_1[1], point_4[0], point_4[1]))
+
+                # Convert the PIL Image to a NumPy array
+                cropped_image_np = np.array(cropped_image)
+                cropped_images.append(cropped_image_np)
+
+    return cropped_images
 
 def find_unique_x_coordinates(points):
     """
@@ -164,7 +201,7 @@ def find_unique_y_coordinates(points):
     
     return storage_list
 
-def generate_artiffical_corners(points, image):
+def generate_sqaure_grid(points):
     """
     Generates artificial corners for an image based on input points.
 
@@ -189,29 +226,24 @@ def generate_artiffical_corners(points, image):
 
 def generate_grid_from_points(x_coordinates, y_coordinates):
     """
-    Generates a grid of points from given x and y coordinates.
+    Generates a grid of points from given x- and y-coordinates.
 
     Args:
     - x_coordinates: List of x-coordinates.
     - y_coordinates: List of y-coordinates.
 
     Returns:
-    - List of tuples representing the grid points, sorted first by y-coordinate and then by x-coordinate.
+    - 2D array representing the grid points, with nrow = len(y_coordinates) and ncol = len(x_coordinates).
     """
+    # Initialize the 2D array with zeros
+    grid = [[0 for _ in range(len(x_coordinates))] for _ in range(len(y_coordinates))]
 
-    # Create an empty list to store all the generated points
-    generated_grid_points = []
+    # Populate the grid with coordinates
+    for i, x_coordinate in enumerate(x_coordinates):
+        for j, y_coordinate in enumerate(y_coordinates):
+            grid[j][i] = (x_coordinate, y_coordinate)
 
-    # Generate all possible points by combining x and y coordinates
-    for x_coordinate in x_coordinates:
-        for y_coordinate in y_coordinates:
-            if not point_is_in_storage_list((x_coordinate, y_coordinate), generated_grid_points):
-                generated_grid_points.append((x_coordinate, y_coordinate))
-    
-    # Sort the generated_grid_points first by y-coordinate and then by x-coordinate
-    generated_grid_points.sort(key=lambda point: (point[1], point[0]))
-    
-    return generated_grid_points  # Return the sorted list of tuples representing the grid points
+    return grid
 
 def hierarchical_contour_filtering_by_size(contours, hierarchy, n):
     """
