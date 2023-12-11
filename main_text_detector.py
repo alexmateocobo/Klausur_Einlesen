@@ -73,9 +73,9 @@ def text_detector(image):
     # Extract cropped images from the pre-processed image using grid_1 and grid_2 coordinates
     cropped_images_1 = extract_text_from_image(pre_processed_image, grid_1)
     cropped_images_2 = extract_text_from_image(pre_processed_image, grid_2)
-    display_image_in_terminal(cropped_images_1[0], "Name")
-    display_image_in_terminal(cropped_images_1[1], "Vorname")
-    display_image_in_terminal(cropped_images_1[2], "Matrikelnummer")
-    display_image_in_terminal(cropped_images_1[3], "Fachsemester")
+    display_image_in_terminal(cropped_images_1[0], "")
+    display_image_in_terminal(cropped_images_1[1], "")
+    display_image_in_terminal(cropped_images_1[2], "")
+    display_image_in_terminal(cropped_images_1[3], "")
 
     return cropped_images_1, cropped_images_2
