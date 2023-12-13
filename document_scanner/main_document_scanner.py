@@ -1,14 +1,14 @@
 import cv2
 import numpy as np
-from utils_document_scanner import corner_detector
-from utils_document_scanner import crop_image_percentage_based
-from utils_document_scanner import display_image_in_terminal
-from utils_document_scanner import draw_contours_in_image
-from utils_document_scanner import draw_labeled_circles
-from utils_document_scanner import final_destination_corners
-from utils_document_scanner import order_points_clockwise
-from utils_document_scanner import perspective_transformation
-from utils_document_scanner import pre_process_image
+from document_scanner.utils_document_scanner import corner_detector
+from document_scanner.utils_document_scanner import crop_image_percentage_based
+from document_scanner.utils_document_scanner import display_image_in_terminal
+from document_scanner.utils_document_scanner import draw_contours_in_image
+from document_scanner.utils_document_scanner import draw_labeled_circles
+from document_scanner.utils_document_scanner import final_destination_corners
+from document_scanner.utils_document_scanner import order_points_clockwise
+from document_scanner.utils_document_scanner import perspective_transformation
+from document_scanner.utils_document_scanner import pre_process_image
 
 '''
 This section involves document scanning and perspective correction:

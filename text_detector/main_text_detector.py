@@ -1,13 +1,13 @@
 import cv2
-from utils_text_detector import approximate_contours
-from utils_text_detector import corner_detector
-from utils_text_detector import display_image_in_terminal
-from utils_text_detector import draw_circles
-from utils_text_detector import draw_contours_in_image
-from utils_text_detector import extract_text_from_image
-from utils_text_detector import generate_sqaure_grid
-from utils_text_detector import hierarchical_contour_filtering_by_size
-from utils_text_detector import pre_process_scanned_image
+from text_detector.utils_text_detector import approximate_contours
+from text_detector.utils_text_detector import corner_detector
+from text_detector.utils_text_detector import display_image_in_terminal
+from text_detector.utils_text_detector import draw_circles
+from text_detector.utils_text_detector import draw_contours_in_image
+from text_detector.utils_text_detector import extract_text_from_image
+from text_detector.utils_text_detector import generate_sqaure_grid
+from text_detector.utils_text_detector import hierarchical_contour_filtering_by_size
+from text_detector.utils_text_detector import pre_process_scanned_image
 
 def text_detector(image):
     """
